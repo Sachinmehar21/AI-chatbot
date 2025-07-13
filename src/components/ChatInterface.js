@@ -76,7 +76,7 @@ export default function ChatInterface() {
               </svg>
             </div>
             <h3 className="text-base sm:text-lg font-medium text-white mb-2">Welcome to Gemini Chatbot!</h3>
-            <p className="text-gray-400 max-w-xs mx-auto text-xs sm:text-sm">Ask me anything! I'm here to help with questions, coding, writing, analysis, and more.</p>
+            <p className="text-gray-400 max-w-xs mx-auto text-xs sm:text-sm">Ask me anything! I&apos;m here to help with questions, coding, writing, analysis, and more.</p>
           </div>
         )}
         {messages.map((message, index) => (
