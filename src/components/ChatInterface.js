@@ -52,89 +52,303 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-gray-100">
-      {/* Top Header */}
-      <header className="w-full bg-gray-950 border-b border-gray-800 shadow-sm sticky top-0 z-20">
-        <div className="max-w-md mx-auto flex flex-col items-center py-3 px-2">
-          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-wide">AI Chatbot</h1>
-          <a
-            href="https://github.com/Sachinmehar21"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs sm:text-sm text-indigo-400 hover:underline mt-1"
-          >
-            Made by <span className="font-semibold">sachinmehar21</span>
-          </a>
+    <div className="chat-container">
+      {/* Header */}
+      <div className="chat-header">
+        <div className="header-content-flex">
+          <img src="/astro-bot.gif" alt="Astro Bot" className="header-gif" />
+          <div className="header-title-group">
+            <span className="header-title">AI Chatbot</span>
+            <span className="header-subtitle">
+              by <a href="https://github.com/Sachinmehar21" target="_blank" rel="noopener noreferrer" className="header-link">sachinmehar21</a>
+            </span>
+          </div>
         </div>
-      </header>
-      <div className="flex-1 overflow-y-auto px-1 sm:px-3 py-2 sm:py-4 space-y-3 sm:space-y-4 max-w-md mx-auto w-full">
+        {/* Removed dropdown arrow */}
+      </div>
+      {/* Chat messages area */}
+      <div className="chat-messages">
         {messages.length === 0 && (
-          <div className="text-center py-10 sm:py-12">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-indigo-700 to-purple-800 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <svg className="w-7 h-7 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-            </div>
-            <h3 className="text-base sm:text-lg font-medium text-white mb-2">Welcome to Gemini Chatbot!</h3>
-            <p className="text-gray-400 max-w-xs mx-auto text-xs sm:text-sm">Ask me anything! I&apos;m here to help with questions, coding, writing, analysis, and more.</p>
+          <div className="empty-message-welcome">
+            <img src="/chatbot-logo.png" alt="Chatbot Logo" className="welcome-logo" />
+            <div className="welcome-ask">Ask Anything and Everything!</div>
+            <h2 className="welcome-title">Your personalized AI chatbot</h2>
+            <p className="welcome-subtitle">Created by <a href="https://github.com/Sachinmehar21" target="_blank" rel="noopener noreferrer" className="header-link">sachinmehar21</a></p>
           </div>
         )}
         {messages.map((message, index) => (
-          <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[80vw] sm:max-w-xs md:max-w-md px-3 py-2 rounded-xl break-words text-sm sm:text-base ${
-              message.role === 'user' ? 'bg-indigo-700 text-white' :
-              message.isError ? 'bg-red-900 text-red-200' :
-              'bg-gray-800 text-gray-100 border border-gray-700'
-            }`}>
-              <p className="whitespace-pre-wrap">{message.content}</p>
-              <p className={`text-[10px] sm:text-xs mt-1 ${message.role === 'user' ? 'text-indigo-200' : 'text-gray-400'}`}>{message.timestamp.toLocaleTimeString()}</p>
+          <div key={index} className={`message-row ${message.role === 'user' ? 'user' : 'assistant'}`}> 
+            <div className={`message-bubble ${message.role === 'user' ? 'user' : message.isError ? 'error' : 'assistant'}`}> 
+              <p>{message.content}</p>
+              <p className="timestamp">{message.timestamp.toLocaleTimeString()}</p>
             </div>
           </div>
         ))}
         {isLoading && (
-          <div className="flex justify-start">
-            <div className="bg-gray-800 text-gray-100 border border-gray-700 px-3 py-2 rounded-xl">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          <div className="message-row assistant">
+            <div className="message-bubble assistant">
+              <div className="typing-indicator">
+                <div className="dot" />
+                <div className="dot" />
+                <div className="dot" />
               </div>
             </div>
           </div>
         )}
         <div ref={messagesEndRef} />
       </div>
-      <div className="bg-gray-900 border-t border-gray-800 px-1 sm:px-3 py-3 w-full max-w-md mx-auto">
-        <form onSubmit={handleSubmit} className="flex gap-2 sm:gap-3">
+      {/* Input area */}
+      <form onSubmit={handleSubmit} className="chat-input-container">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message here..."
-            className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:border-transparent text-base sm:text-lg"
+          placeholder="Type your message..."
+          className="chat-input"
             disabled={isLoading}
             autoComplete="off"
-            style={{ minHeight: 44 }}
           />
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="px-4 sm:px-6 py-2 bg-gradient-to-r from-indigo-700 to-purple-800 text-white rounded-lg font-medium hover:from-indigo-800 hover:to-purple-900 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-base sm:text-lg"
-            style={{ minHeight: 44 }}
-          >
-            {isLoading ? (
-              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          className="send-btn"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="12" fill="#232323"/>
+            <path d="M12 8v8M12 8l-4 4M12 8l4 4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
-            )}
           </button>
         </form>
-      </div>
+      <style jsx>{`
+        .chat-container {
+          display: flex;
+          flex-direction: column;
+          height: 100dvh;
+          background: #1B202D;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        .chat-header {
+          background: transparent;
+          color: #fff;
+          font-size: 1.2rem;
+          font-weight: 600;
+          padding: 16px 24px 0 24px;
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          border-bottom: none;
+          border-radius: 0;
+          box-shadow: none;
+          justify-content: space-between;
+        }
+        .header-title-group {
+          display: flex;
+          flex-direction: column;
+        }
+        .header-title {
+          font-size: 1.2rem;
+          font-weight: 600;
+        }
+        .header-subtitle {
+          font-size: 0.85rem;
+          font-weight: 400;
+          color: #bdbdbd;
+        }
+        .header-link {
+          color: #4f8cff;
+          text-decoration: underline;
+          font-size: 0.85rem;
+        }
+        .header-link:hover {
+          color: #82b1ff;
+        }
+        .dropdown-arrow {
+          font-size: 1rem;
+          margin-left: 8px;
+        }
+        .chat-messages {
+          flex: 1;
+          overflow-y: auto;
+          background: #1B202D;
+          padding: 24px;
+        }
+        .empty-message {
+          color: #888;
+          text-align: center;
+          margin-top: 40px;
+        }
+        .message-row {
+          display: flex;
+          margin-bottom: 12px;
+        }
+        .message-row.user {
+          justify-content: flex-end;
+        }
+        .message-row.assistant {
+          justify-content: flex-start;
+        }
+        .message-bubble {
+          max-width: 80vw;
+          padding: 12px 16px;
+          border-radius: 18px;
+          font-size: 1rem;
+          word-break: break-word;
+        }
+        .message-bubble.user {
+          background: #7A8194;
+          color: #fff;
+          border-bottom-right-radius: 6px;
+        }
+        .message-bubble.assistant {
+          background: #373E4E;
+          color: #fff;
+          border-bottom-left-radius: 6px;
+        }
+        .message-bubble.error {
+          background: #a00;
+          color: #fff;
+        }
+        .timestamp {
+          font-size: 0.7rem;
+          color: #aaa;
+          margin-top: 6px;
+        }
+        .chat-input-container {
+          display: flex;
+          align-items: center;
+          background: #232323;
+          padding: 12px 16px;
+          border-radius: 24px;
+          margin: 24px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .chat-input {
+          flex: 1;
+          background: transparent;
+          border: none;
+          color: #fff;
+          font-size: 1rem;
+          outline: none;
+          padding: 8px;
+        }
+        .send-btn {
+          background: #fff;
+          border: none;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          margin-left: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+        .send-btn:hover {
+          background: #e0e0e0;
+        }
+        .typing-indicator {
+          display: flex;
+          gap: 4px;
+        }
+        .dot {
+          width: 8px;
+          height: 8px;
+          background: #888;
+          border-radius: 50%;
+          animation: bounce 1s infinite alternate;
+        }
+        .dot:nth-child(2) {
+          animation-delay: 0.2s;
+        }
+        .dot:nth-child(3) {
+          animation-delay: 0.4s;
+        }
+        @keyframes bounce {
+          to {
+            opacity: 0.3;
+            transform: translateY(-8px);
+          }
+        }
+        .empty-message-welcome {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          margin-top: 40px;
+          margin-bottom: 40px;
+        }
+        .welcome-logo {
+          width: 160px;
+          max-width: 60vw;
+          height: auto;
+          margin-bottom: 24px;
+        }
+        .welcome-title {
+          font-size: 1.3rem;
+          font-weight: 600;
+          color: #d1d5db;
+          margin-bottom: 8px;
+        }
+        .welcome-subtitle {
+          font-size: 1.1rem;
+          color: #bdbdbd;
+        }
+        .welcome-ask {
+          font-size: 2.2rem;
+          font-weight: 800;
+          color: #fff;
+          margin-bottom: 10px;
+          margin-top: 10px;
+          text-align: center;
+          letter-spacing: 0.5px;
+        }
+        @media (max-width: 600px) {
+          .chat-header {
+            padding: 8px 8px 0 8px;
+          }
+          .chat-input-container {
+            margin: 8px;
+            padding: 8px 8px;
+          }
+          .chat-messages {
+            padding: 8px 4px;
+          }
+          .welcome-logo {
+            width: 150px;
+          }
+          .welcome-title {
+            font-size: 1rem;
+          }
+          .welcome-subtitle {
+            font-size: 0.95rem;
+          }
+          .empty-message-welcome {
+            margin-top: 12px;
+            margin-bottom: 12px;
+          }
+          .chat-input {
+            font-size: 1rem;
+            padding: 8px 4px;
+          }
+          .send-btn {
+            width: 36px;
+            height: 36px;
+          }
+        }
+        .header-content-flex {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .header-gif {
+          height: 64px;
+          width: auto;
+          margin-right: 4px;
+          border-radius: 12px;
+        }
+      `}</style>
     </div>
   );
 } 
