@@ -7,6 +7,57 @@ export default function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!input.trim() || isLoading) return;
+
+  const userMessage = {
+    role: 'user',
+    content: input,
+    timestamp: new Date(),
+  };
+
+  setMessages(prev => [...prev, userMessage]);
+  setInput('');
+  setIsLoading(true);
+
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: input }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to get response');
+    }
+
+    const data = await response.json();
+
+    setMessages(prev => [
+      ...prev,
+      {
+        role: 'assistant',
+        content: data.message,
+        timestamp: new Date(),
+      },
+    ]);
+  } catch (error) {
+    setMessages(prev => [
+      ...prev,
+      {
+        role: 'assistant',
+        content: `Error: ${error.message}`,
+        timestamp: new Date(),
+        isError: true,
+      },
+    ]);
+  } finally {
+    setIsLoading(false);
+  }
+};
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   useEffect(() => scrollToBottom(), [messages]);
 
