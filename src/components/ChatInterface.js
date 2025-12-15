@@ -25,7 +25,7 @@ export default function ChatInterface() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input, history })
+        body: JSON.stringify({ message: input })
       });
       if (!response.ok) {
         const errorData = await response.json();
