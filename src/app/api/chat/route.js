@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
-    const API_KEY = "AIzaSyC5-q6YFUi8n3iG9po9R9iEeKR0Pn_TqDo"; // direct key ok for demo
+    const API_KEY = "AIzaSyDwSN4wDp_VR8zC06SqHyOow2hBjgF5f0o"; // direct key ok for demo
 
     const { message } = await req.json();
     if (!message) {
