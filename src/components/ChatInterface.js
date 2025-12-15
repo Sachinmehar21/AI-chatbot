@@ -32,7 +32,7 @@ export default function ChatInterface() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: userMessage.content }),
       });
 
       const data = await response.json();
@@ -41,16 +41,16 @@ export default function ChatInterface() {
         ...prev,
         {
           role: 'assistant',
-          content: data.message,
+          content: data.message || 'No response',
           timestamp: new Date(),
         },
       ]);
-    } catch (error) {
+    } catch (err) {
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          content: `Error: ${error.message}`,
+          content: 'Error getting response',
           timestamp: new Date(),
           isError: true,
         },
@@ -103,25 +103,25 @@ export default function ChatInterface() {
           </div>
         )}
 
-        {messages.map((m, i) => (
+        {messages.map((msg, i) => (
           <div
             key={i}
             className={`message-row ${
-              m.role === 'user' ? 'user' : 'assistant'
+              msg.role === 'user' ? 'user' : 'assistant'
             }`}
           >
             <div
               className={`message-bubble ${
-                m.role === 'user'
+                msg.role === 'user'
                   ? 'user'
-                  : m.isError
+                  : msg.isError
                   ? 'error'
                   : 'assistant'
               }`}
             >
-              <p>{m.content}</p>
+              <p>{msg.content}</p>
               <p className="timestamp">
-                {m.timestamp.toLocaleTimeString()}
+                {msg.timestamp.toLocaleTimeString()}
               </p>
             </div>
           </div>
@@ -145,40 +145,33 @@ export default function ChatInterface() {
       {/* Input */}
       <form onSubmit={handleSubmit} className="chat-input-container">
         <input
-          type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask for research, code, writing, or help..."
           className="chat-input"
           disabled={isLoading}
-          autoComplete="off"
         />
-        <button
-          type="submit"
-          disabled={!input.trim() || isLoading}
-          className="send-btn"
-        >
+        <button className="send-btn" disabled={!input.trim() || isLoading}>
           Send
         </button>
       </form>
 
-      {/* CSS (SAME LOOK) */}
+      {/* CSS */}
       <style jsx>{`
         .chat-container {
           display: flex;
           flex-direction: column;
           height: 100dvh;
           background: #1b202d;
-          font-family: system-ui;
         }
         .chat-header {
-          padding: 16px;
-          color: white;
+          padding: 16px 24px 0;
+          color: #fff;
         }
         .header-content-flex {
           display: flex;
-          align-items: center;
           gap: 12px;
+          align-items: center;
         }
         .header-gif {
           height: 64px;
@@ -197,8 +190,8 @@ export default function ChatInterface() {
         }
         .chat-messages {
           flex: 1;
-          overflow-y: auto;
           padding: 24px;
+          overflow-y: auto;
         }
         .message-row {
           display: flex;
@@ -207,14 +200,10 @@ export default function ChatInterface() {
         .message-row.user {
           justify-content: flex-end;
         }
-        .message-row.assistant {
-          justify-content: flex-start;
-        }
         .message-bubble {
-          max-width: 80%;
           padding: 12px 16px;
           border-radius: 18px;
-          color: white;
+          max-width: 80%;
         }
         .message-bubble.user {
           background: #7a8194;
@@ -228,24 +217,27 @@ export default function ChatInterface() {
         .timestamp {
           font-size: 0.7rem;
           color: #aaa;
-          margin-top: 6px;
+          margin-top: 4px;
         }
         .chat-input-container {
           display: flex;
-          padding: 12px 16px;
-          background: #232323;
           margin: 16px;
+          background: #232323;
           border-radius: 24px;
+          padding: 12px;
         }
         .chat-input {
           flex: 1;
           background: transparent;
           border: none;
-          color: white;
+          color: #fff;
           outline: none;
         }
         .send-btn {
-          margin-left: 8px;
+          background: #fff;
+          border: none;
+          padding: 0 16px;
+          border-radius: 20px;
         }
         .typing-indicator {
           display: flex;
@@ -260,8 +252,8 @@ export default function ChatInterface() {
         }
         @keyframes bounce {
           to {
-            opacity: 0.3;
             transform: translateY(-6px);
+            opacity: 0.4;
           }
         }
       `}</style>
