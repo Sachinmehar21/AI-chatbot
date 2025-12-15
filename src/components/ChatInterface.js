@@ -10,18 +10,6 @@ export default function ChatInterface() {
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   useEffect(() => scrollToBottom(), [messages]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
-    const userMessage = { role: 'user', content: input, timestamp: new Date() };
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setIsLoading(true);
-    try {
-      const history = messages.map(msg => ({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }]
-      }));
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
