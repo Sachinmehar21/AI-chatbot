@@ -173,6 +173,7 @@ export default function ChatInterface() {
           padding: 24px;
           padding-left: calc(env(safe-area-inset-left) + 24px);
           padding-right: calc(env(safe-area-inset-right) + 24px);
+          padding-bottom: 100px;
         }
         .empty-message {
           color: #888;
@@ -221,11 +222,14 @@ export default function ChatInterface() {
           background: #232323;
           padding: 12px 16px;
           border-radius: 24px;
-          margin: 24px;
-          margin-bottom: max(12px, env(safe-area-inset-bottom));
+          margin: 16px 24px;
+          margin-bottom: max(20px, calc(env(safe-area-inset-bottom) + 8px));
           margin-left: calc(env(safe-area-inset-left) + 24px);
           margin-right: calc(env(safe-area-inset-right) + 24px);
           box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          position: sticky;
+          bottom: 0;
+          flex-shrink: 0;
         }
         .chat-input {
           flex: 1;
@@ -315,15 +319,16 @@ export default function ChatInterface() {
           }
           .chat-input-container {
             margin: 8px;
-            margin-bottom: max(8px, env(safe-area-inset-bottom));
+            margin-bottom: max(16px, calc(env(safe-area-inset-bottom) + 4px));
             margin-left: calc(env(safe-area-inset-left) + 8px);
             margin-right: calc(env(safe-area-inset-right) + 8px);
-            padding: 8px 8px;
+            padding: 10px 12px;
           }
           .chat-messages {
             padding: 8px 4px;
             padding-left: calc(env(safe-area-inset-left) + 4px);
             padding-right: calc(env(safe-area-inset-right) + 4px);
+            padding-bottom: 80px;
           }
           .welcome-logo {
             width: 150px;
