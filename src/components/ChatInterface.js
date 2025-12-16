@@ -128,11 +128,11 @@ export default function ChatInterface() {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
         .chat-header {
-          background: transparent;
+          background: #1B202D;
           color: #fff;
           font-size: 1.2rem;
           font-weight: 600;
-          padding: calc(env(safe-area-inset-top) + 16px) calc(env(safe-area-inset-right) + 24px) 0 calc(env(safe-area-inset-left) + 24px);
+          padding: calc(env(safe-area-inset-top) + 8px) calc(env(safe-area-inset-right) + 24px) 8px calc(env(safe-area-inset-left) + 24px);
           display: flex;
           align-items: flex-start;
           gap: 8px;
@@ -222,7 +222,7 @@ export default function ChatInterface() {
           padding: 12px 16px;
           border-radius: 24px;
           margin: 24px;
-          margin-bottom: calc(env(safe-area-inset-bottom) + 24px);
+          margin-bottom: max(12px, env(safe-area-inset-bottom));
           margin-left: calc(env(safe-area-inset-left) + 24px);
           margin-right: calc(env(safe-area-inset-right) + 24px);
           box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -311,11 +311,11 @@ export default function ChatInterface() {
         }
         @media (max-width: 600px) {
           .chat-header {
-            padding: calc(env(safe-area-inset-top) + 8px) calc(env(safe-area-inset-right) + 8px) 0 calc(env(safe-area-inset-left) + 8px);
+            padding: calc(env(safe-area-inset-top) + 4px) calc(env(safe-area-inset-right) + 8px) 4px calc(env(safe-area-inset-left) + 8px);
           }
           .chat-input-container {
             margin: 8px;
-            margin-bottom: calc(env(safe-area-inset-bottom) + 8px);
+            margin-bottom: max(8px, env(safe-area-inset-bottom));
             margin-left: calc(env(safe-area-inset-left) + 8px);
             margin-right: calc(env(safe-area-inset-right) + 8px);
             padding: 8px 8px;
