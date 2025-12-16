@@ -7,51 +7,49 @@ export default function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
+  const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  useEffect(() => scrollToBottom(), [messages]);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!input.trim() || isLoading) return;
-
-  const userMessage = {
-    role: 'user',
-    content: input,
-    timestamp: new Date(),
-  };
-
-  setMessages(prev => [...prev, userMessage]);
-  setInput('');
-  setIsLoading(true);
-
-  try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: input }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to get response');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+    const userMessage = { role: 'user', content: input, timestamp: new Date() };
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setIsLoading(true);
+    try {
+      const history = messages.map(msg => ({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: msg.content }]
+      }));
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: input, history })
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to get response');
+      }
+      const data = await response.json();
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: data.error ? `Error: ${data.error}` : data.message,
+        timestamp: new Date(),
+        isError: !!data.error
+      }]);
+    } catch (error) {
+      console.error('Chat error:', error);
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: `Error: ${error.message}`,
+        timestamp: new Date(),
+        isError: true
+      }]);
+    } finally {
+      setIsLoading(false);
     }
-
-    const data = await response.json();
-
-    setMessages(prev => [...prev, {
-      role: 'assistant',
-      content: data.message,
-      timestamp: new Date(),
-    }]);
-  } catch (error) {
-    setMessages(prev => [...prev, {
-      role: 'assistant',
-      content: `Error: ${error.message}`,
-      timestamp: new Date(),
-      isError: true,
-    }]);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   return (
     <div className="chat-container">
@@ -60,10 +58,9 @@ const handleSubmit = async (e) => {
         <div className="header-content-flex">
           <img src="/astro-bot.gif" alt="Astro Bot" className="header-gif" />
           <div className="header-title-group">
-            <span className="header-title">AI-Based Omni Agent</span>
+            <span className="header-title">AI Chatbot</span>
             <span className="header-subtitle">
-              Multi-purpose intelligent assistant <br/>
-              git repo: <a href="https://github.com/Sachinmehar21" target="_blank" rel="noopener noreferrer" className="header-link">here</a>
+              by <a href="https://github.com/Sachinmehar21" target="_blank" rel="noopener noreferrer" className="header-link">sachinmehar21</a>
             </span>
           </div>
         </div>
@@ -74,13 +71,9 @@ const handleSubmit = async (e) => {
         {messages.length === 0 && (
           <div className="empty-message-welcome">
             <img src="/chatbot-logo.png" alt="Chatbot Logo" className="welcome-logo" />
-           <div className="welcome-ask">AI-Based Omni Agent</div>
-<h2 className="welcome-title">
-  One AI for research, coding, writing & academics
-</h2>
-<p className="welcome-subtitle">
-  Gemini-powered intelligent assistant
-</p>
+            <div className="welcome-ask">Ask Anything and Everything!</div>
+            <h2 className="welcome-title">Your personalized AI chatbot</h2>
+            <p className="welcome-subtitle">Created by <a href="https://github.com/Sachinmehar21" target="_blank" rel="noopener noreferrer" className="header-link">sachinmehar21</a></p>
           </div>
         )}
         {messages.map((message, index) => (
@@ -110,7 +103,7 @@ const handleSubmit = async (e) => {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask for research, code, writing, or help..."
+          placeholder="Type your message..."
           className="chat-input"
             disabled={isLoading}
             autoComplete="off"
